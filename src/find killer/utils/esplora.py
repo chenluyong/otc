@@ -8,12 +8,12 @@ import time
 
 class esplora:
     block_end_points = {
-        'block_info': '/block/',  # Returns information about a block. Requires block hash as data.
-        'block_height': '/block-height/',  # Returns the hash of the block currently at height
-        'last_block_height': "/blocks/tip/height",  # Returns the height of the last block.
-        'last_block_hash': '/blocks/tip/hash',  # Returns the hash of the last block.
-        'block_hash': '/block-height/',  # Returns the height of the last block.
-        'ten_block_info': '/blocks/',
+        # 'block_info': '/block/',  # Returns information about a block. Requires block hash as data.
+        # 'block_height': '/block-height/',  # Returns the hash of the block currently at height
+        # 'last_block_height': "/blocks/tip/height",  # Returns the height of the last block.
+        # 'last_block_hash': '/blocks/tip/hash',  # Returns the hash of the last block.
+        # 'block_hash': '/block-height/',  # Returns the height of the last block.
+        # 'ten_block_info': '/blocks/',
     # Returns the 10 newest blocks starting at the tip or at start_height if specified.
         'txs': '/address/{0}/txs',
         'tx': '/tx/{0}',
@@ -31,7 +31,7 @@ class esplora:
         response_json = json.loads(response)
         return self.interpreter(method, response_json)
 
-    def interpreter(self,method, _json):
+    def interpreter(self, method, _json):
         ret_json = {}
         if method == 'address':
             chain_stats = _json.get('chain_stats')
@@ -40,11 +40,15 @@ class esplora:
             ret_json['spent_count'] = chain_stats.get('spent_txo_count')
         elif method == 'txs':
             ret_json = self.txs(_json)
+        elif method == 'tx':
+            ret_json = self.tx(_json)
+        elif method == 'utxo':
+            ret_json = self.utxo(_json)
         return json.dumps(ret_json)
 
-    def value(self,value):
+    def value(self, value, precision = 8):
         ret_value = value / self.precision
-        return round(ret_value,8)
+        return round(ret_value,precision)
 
     def tx(self, _tx):
         tx = {}
@@ -88,11 +92,10 @@ class esplora:
         if fee == None:
             fee = 0
         gas_used = _tx['size']
-        print(fee)
         tx['fee'] = self.value(fee)
 
         tx['fee_detail'] = {
-            'gas_price': round(fee / gas_used, 10),
+            'gas_price': self.value(fee / gas_used, 10),
             'gas_used': gas_used
         }
         tx['status'] = _tx['status'].copy()
@@ -107,9 +110,17 @@ class esplora:
             ret_json.append(tx)
         return ret_json
 
-print(esplora().call('address', '1P5ebVoi3J4KQJyQbwPmDzJtGm4jyC1rMh'))
-print(esplora().call('txs', '1KFHE7w8BhaENAswwryaoccDb6qcT6DbYY'))
-print(esplora().call('tx', 'b3060c0e237baf0486d6b5d99c8edf13ccf8933373116380c96950c219e8ee33'))
+    def utxo(self,_json):
+        ret_json = _json.copy()
+        utxo_size = len(_json)
+        for pos in range(utxo_size):
+            value = ret_json[pos]['value']
+            ret_json[pos]['value'] = self.value(value)
+        return _json
+
+# print(esplora().call('address', '1P5ebVoi3J4KQJyQbwPmDzJtGm4jyC1rMh'))
+# print(esplora().call('txs', '1KFHE7w8BhaENAswwryaoccDb6qcT6DbYY'))
+# print(esplora().call('tx', 'e1927b13d547a7ef1db87fa35a20e05f0033458b3ff3e6dba9b732a1877c6dfc'))
 print(esplora().call('utxo', '1P5ebVoi3J4KQJyQbwPmDzJtGm4jyC1rMh'))
 
 # class esplora(BTCExplorer):
