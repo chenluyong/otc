@@ -273,6 +273,8 @@ public class KeyTreerTest {
 
     @Test
     public void deriveBepalKeyRange() {
+        // use https://iancoleman.io/bip39/#english
+        // check the codes.
         String codes = "beyond honey crisp weird type coast pair endless idle glad famous visa";
         String[] codeAry = codes.split(" ");
         List<String> list = new ArrayList<>();
@@ -329,6 +331,8 @@ public class KeyTreerTest {
 
     @Test
     public void sign() {
+        // use https://iancoleman.io/bip39/#english
+        // check the codes.
         String codes = "beyond honey crisp weird type coast pair endless idle glad famous visa";
         String[] codeAry = codes.split(" ");
         List<String> list = new ArrayList<>();
@@ -370,6 +374,8 @@ public class KeyTreerTest {
 
     @Test
     public void signVerify() {
+        // use https://iancoleman.io/bip39/#english
+        // check the codes.
         String codes = "beyond honey crisp weird type coast pair endless idle glad famous visa";
         String[] codeAry = codes.split(" ");
         List<String> list = new ArrayList<>();
@@ -502,6 +508,8 @@ public class KeyTreerTest {
     ////////////////////////////// louie /////////////////////////////////////////
     @Test
     public void testHDKey_Encode_Decode() {
+        // use https://iancoleman.io/bip39/#english
+        // check the codes.
         String codes = "beyond honey crisp weird type coast pair endless idle glad famous visa";
         String[] codeAry = codes.split(" ");
         List<String> list = new ArrayList<>();
@@ -552,6 +560,8 @@ public class KeyTreerTest {
 
     @Test
     public void testHDKey_DerivePub() {
+        // use https://iancoleman.io/bip39/#english
+        // check the codes.
         String codes = "beyond honey crisp weird type coast pair endless idle glad famous visa";
         String[] codeAry = codes.split(" ");
         List<String> list = new ArrayList<>();
@@ -590,6 +600,7 @@ public class KeyTreerTest {
     public void testMain() {
         byte[] web = Base58.decode("xprvA14GVP5Sewu3Ssrccq5cEwXo1SAYKPk9cx2XAja9sGx6TJS3MrxEySgLokotL9n6nvG2UNrMgCkYN5tzENJRHWQjY2hzs4NmXbtyDeG48nT");
         byte[] local = Base58.decode("xprvA1mSAuVkHjoRq3acVz3FVoBLfhNCKcnNCCLiFE3eUMvb8nPHdb3HGMwasbDWeWa5zQUY9DNmaxZ1qDUXBAwCXNKEBkeHxoo4k8L2vNPGJZG");
+
          try {
             HDKey hdKey = new HDKey(web,CoinTag.tagBITCOIN);
             HDKey hdKey_local = new HDKey(local,CoinTag.tagBITCOIN);
