@@ -19,8 +19,8 @@ class esplora:
         'tx': '/tx/{0}',
         'utxo':'/address/{0}/utxo',
         'address': '/address/{0}'
-
     }
+
     base_url = "http://btcexplorer.eshanren.com/api"
     precision = 10 ** 8
 
@@ -122,6 +122,8 @@ class esplora:
 # print(esplora().call('txs', '1KFHE7w8BhaENAswwryaoccDb6qcT6DbYY'))
 # print(esplora().call('tx', 'e1927b13d547a7ef1db87fa35a20e05f0033458b3ff3e6dba9b732a1877c6dfc'))
 print(esplora().call('utxo', '1P5ebVoi3J4KQJyQbwPmDzJtGm4jyC1rMh'))
+# 获取交易记录
+# 获取余额
 
 # class esplora(BTCExplorer):
 #
