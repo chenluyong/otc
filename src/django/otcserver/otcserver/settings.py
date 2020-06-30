@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
 
-    'account.apps.AccountConfig'
+    'account.apps.AccountConfig',
+    'history.apps.HistoryConfig',
 ]
 
 MIDDLEWARE = [
@@ -132,3 +133,8 @@ STATIC_URL = '/static/'
 
 
 AUTH_USER_MODEL = "account.Info"
+
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
+    'PAGE_SIZE': 2
+}
