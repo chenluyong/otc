@@ -4,6 +4,8 @@ from account import views
 
 urlpatterns = [
     url(r'^$', views.Account.as_view()),
+    url(r'^(?P<pk>(\d{1,32}))/$', views.AccountDetail.as_view(),name='account_detail'),
+    url(r'^login/$', views.AccountLogin.as_view(), name='account_login'),
 
     url(r'^otc/$', views.OtcAccountList.as_view()),
 

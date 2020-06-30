@@ -1,21 +1,31 @@
 from rest_framework import serializers
-from account.models import Info
+from account.models import Info as User
+
+
+class UserDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+
+        fields = '__all__'
+
 
 class OtcAccountListSerializer(serializers.ModelSerializer):
     # owner = serializers.ReadOnlyField(source='owner.username')
     class Meta:
-        model = Info
-        fields = ['id', 'nickname', 'margin_amount','date_joined', 'last_login',
-                  'trade_count', 'month_trade_count', 'buy_trade_count','sell_trade_count',
-                  'order_complete_rate', 'release_time_avg', 'cancel_time_avg',]
+        model = User
+        # fields = ['id', 'nickname', 'margin_amount','date_joined', 'last_login',
+        #           'trade_count', 'month_trade_count', 'buy_trade_count','sell_trade_count',
+        #           'order_complete_rate', 'release_time_avg', 'cancel_time_avg',]
+        fields = '__all__'
 
 class OtcAccountDetailSerializer(serializers.ModelSerializer):
     # owner = serializers.ReadOnlyField(source='owner.username')
     class Meta:
-        model = Info
-        fields = ['id', 'nickname', 'margin_amount', 'date_joined', 'last_login',
-                  'trade_count', 'month_trade_count', 'buy_trade_count', 'sell_trade_count',
-                  'order_complete_rate', 'release_time_avg', 'cancel_time_avg', ]
+        model = User
+        # fields = ['id', 'nickname', 'margin_amount', 'date_joined', 'last_login',
+        #           'trade_count', 'month_trade_count', 'buy_trade_count', 'sell_trade_count',
+        #           'order_complete_rate', 'release_time_avg', 'cancel_time_avg', ]
+        fields = '__all__'
 
 
 

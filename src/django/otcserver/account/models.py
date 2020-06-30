@@ -61,7 +61,7 @@ class Info(AbstractUser):
 
 class InfoProviders(models.Model):
     id = models.AutoField(primary_key=True)
-    user = models.ForeignKey(Info, related_name='account', on_delete=models.CASCADE)
+    user = models.ForeignKey(Info, related_name='account_providers', on_delete=models.CASCADE)
     provider = models.CharField(max_length=100,verbose_name='第三方机构名称')
     identifier = models.CharField(max_length=100,verbose_name='第三方机构标识')
     create_at = models.DateTimeField(auto_now_add=True)

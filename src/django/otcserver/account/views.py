@@ -1,39 +1,51 @@
-from django.shortcuts import render
+from django.shortcuts import redirect,reverse
 
 from rest_framework.views import APIView
 from rest_framework import generics
 from rest_framework import mixins
 
 from django.contrib.auth import login,authenticate
-from account.models import Info as User
-
-from utils.json_response import JsonResponse
-
-
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 from django.db.utils import IntegrityError
+
+
+from account.models import Info as User
+from account.serializers import OtcAccountListSerializer,OtcAccountDetailSerializer,UserDetailSerializer
+from utils.json_response import JsonResponse
 from utils.http_code import *
-from .serializers import OtcAccountListSerializer,OtcAccountDetailSerializer
+
+
+class Account(APIView):
+    # 获取信息
+    def get(self, request, *args, **kwargs):
+        if not request.user.is_authenticated:
+            return redirect(reverse('account_login'))
+        return redirect(reverse('account_detail', kwargs = {'pk':request.user.id}))
+
+
+class AccountDetail(# mixins.CreateModelMixin,
+                    mixins.RetrieveModelMixin,
+                    generics.GenericAPIView):
+
+    queryset = User.objects.all()
+    serializer_class = UserDetailSerializer
+
+    # 获取信息
+    @method_decorator(login_required)
+    def get(self, request, *args, **kwargs):
+        user_id = int(kwargs.get('pk'))
+        if user_id != request.user.id:
+            return JsonResponse(None,HTTP_CODE_UNAUTHORIZED)
+        return JsonResponse(self.retrieve(request, *args, **kwargs).data)
 
 
 # 基本账户业务
-class Account(APIView):
+class AccountLogin(APIView):
 
     # 获取信息
     def get(self, request):
-        code = HTTP_CODE_SUCCESS
-
-        while True:
-            if not request.user.is_authenticated:
-                code = HTTP_CODE_UNAUTHORIZED
-                break
-
-            username = request.user.get_username()
-
-            return JsonResponse({
-                'username': username,
-             }, code)
-
-        return JsonResponse(None,code)
+        return JsonResponse(code=HTTP_CODE_BAD_REQUEST)
 
     # 登录
     def post(self,request):
@@ -54,7 +66,7 @@ class Account(APIView):
                     code = HTTP_CODE_INCORRECT_PASSWORD
                     break
 
-                return JsonResponse(None, code)
+                return JsonResponse(code=code)
         except IntegrityError as e:
             code = e.args[0]
             msg = e.args[1]
@@ -74,7 +86,7 @@ class Account(APIView):
             else:
                 code = HTTP_CODE_FORBIDDEN
 
-            return JsonResponse(None, code)
+            return JsonResponse(code=code)
         except IntegrityError as e:
             code = e.args[0]
             msg = e.args[1]
