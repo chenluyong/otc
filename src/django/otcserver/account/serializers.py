@@ -1,14 +1,17 @@
 from rest_framework import serializers
-from account.models import UserInfo
+from account.models import Info
 
-class AccountSerializer(serializers.ModelSerializer):
-    owner = serializers.ReadOnlyField(source='owner.username')
+class AccountInfoSerializer(serializers.ModelSerializer):
+    # owner = serializers.ReadOnlyField(source='owner.username')
     class Meta:
-        model = UserInfo
-        # fields = ['id', 'phone', 'recently_trade_count', 'last_trade_time','owner']
+        model = Info
+        fields = ['id', 'username', 'margin_amount','date_joined', 'last_login',
+                  'trade_count', 'month_trade_count', 'buy_trade_count','sell_trade_count',
+                  'order_complete_rate', 'release_time_avg', 'cancel_time_avg',]
 
 
-    #created = models.DateTimeField(auto_now_add=True)
+
+        #created = models.DateTimeField(auto_now_add=True)
     #title = models.CharField(max_length=100, blank=True, default='')
     #code = models.TextField()
     #linenos = models.BooleanField(default=False)

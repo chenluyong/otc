@@ -2,6 +2,7 @@ from django.shortcuts import render
 
 from rest_framework.views import APIView
 from rest_framework import generics
+from rest_framework import mixins
 
 from django.contrib.auth import login,authenticate
 from account.models import Info as User
@@ -11,6 +12,7 @@ from utils.json_response import JsonResponse
 
 from django.db.utils import IntegrityError
 from utils.http_code import *
+from .serializers import AccountInfoSerializer
 
 
 class Account(APIView):
@@ -90,3 +92,27 @@ class TelegramAccount(APIView):
     # 创建账号
     def put(self,request):
         pass
+
+
+class OtcAccountList(mixins.ListModelMixin,
+                  # mixins.CreateModelMixin,
+                  generics.GenericAPIView):
+
+    # 获取OTC商户列表信息
+    queryset = User.objects.all()
+    serializer_class = AccountInfoSerializer
+
+    def get(self, request, *args, **kwargs):
+        return JsonResponse(self.list(request, *args, **kwargs).data)
+
+
+
+class OtcAccountDetail(mixins.RetrieveModelMixin,
+                  generics.GenericAPIView):
+
+    # 获取OTC商户详细信息
+    queryset = User.objects.all()
+    serializer_class = AccountInfoSerializer
+
+    def get(self, request, *args, **kwargs):
+        return JsonResponse(self.retrieve(request, *args, **kwargs).data)
