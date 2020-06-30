@@ -12,9 +12,10 @@ from utils.json_response import JsonResponse
 
 from django.db.utils import IntegrityError
 from utils.http_code import *
-from .serializers import AccountInfoSerializer
+from .serializers import OtcAccountListSerializer,OtcAccountDetailSerializer
 
 
+# 基本账户业务
 class Account(APIView):
 
     # 获取信息
@@ -82,7 +83,7 @@ class Account(APIView):
 
 
 
-
+# 特殊三方账户
 class TelegramAccount(APIView):
 
     # 获取账号信息
@@ -93,26 +94,53 @@ class TelegramAccount(APIView):
     def put(self,request):
         pass
 
-
+# OTC账户列表
 class OtcAccountList(mixins.ListModelMixin,
                   # mixins.CreateModelMixin,
                   generics.GenericAPIView):
 
     # 获取OTC商户列表信息
     queryset = User.objects.all()
-    serializer_class = AccountInfoSerializer
+    serializer_class = OtcAccountListSerializer
 
     def get(self, request, *args, **kwargs):
         return JsonResponse(self.list(request, *args, **kwargs).data)
 
 
-
+# OTC账户详情
 class OtcAccountDetail(mixins.RetrieveModelMixin,
+                    mixins.UpdateModelMixin,
                   generics.GenericAPIView):
 
     # 获取OTC商户详细信息
     queryset = User.objects.all()
-    serializer_class = AccountInfoSerializer
-
+    serializer_class = OtcAccountDetailSerializer
+    # lookup_field = 'username'
     def get(self, request, *args, **kwargs):
-        return JsonResponse(self.retrieve(request, *args, **kwargs).data)
+        try:
+            return JsonResponse(self.retrieve(request, *args, **kwargs).data)
+        except Exception :
+            return JsonResponse(None,HTTP_CODE_INTERNAL_SERVER_ERROR)
+
+
+    # 修改OTC账户详情
+    def post(self, request, *args, **kwargs):
+        request_otc_id = int(kwargs['pk'])
+
+        print(request_otc_id,'：',request.user.id)
+        if request_otc_id != request.user.id:
+            return JsonResponse({'id':request.user.id},HTTP_CODE_UNAUTHORIZED)
+        return JsonResponse(self.update(request, *args, **kwargs).data)
+
+
+class Test(APIView):
+    def get(self,request):
+        from django.contrib.auth.hashers import make_password, check_password
+        pswd = make_password('asdasd','dwZ5e6fC6O6S','pbkdf2_sha256')
+        b =check_password('asdasd','pbkdf2_sha256$180000$dwZ5e6fC6O6S$YmNmZDE0YjA4NmU2ZTNiN2M0NDRhZTQxMTQ5Mzk3NzkwZDk3NzM2OTc0NWQ1NDllNGQwZjAxNTViNmI0ZjFlZg==')
+
+        # print(b)
+        return JsonResponse({
+            'pswd':'asdasd',
+            'pswd_encode':pswd
+        })

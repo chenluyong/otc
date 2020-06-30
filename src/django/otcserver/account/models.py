@@ -8,10 +8,10 @@ from django.contrib.auth.models import AbstractUser
 class Info(AbstractUser):
     id = models.AutoField(primary_key=True)
     nickname = models.CharField(verbose_name='昵称', null=True, max_length=32)
-    is_email_confirmed = models.BooleanField(default=False)
-    bio = models.TextField(null=True,)
-    avatar_url = models.FileField(upload_to='avatar/', default="/avatar/default_avatar.jpg")
-    phone = models.CharField(max_length=11, null=True, unique=True)
+    is_email_confirmed = models.BooleanField(verbose_name='是否验证邮箱',default=False)
+    bio = models.TextField(verbose_name='个人简介',null=True)
+    avatar_url = models.FileField(verbose_name='头像',upload_to='avatar/', default="/avatar/default_avatar.jpg")
+    phone = models.CharField(verbose_name='手机号',max_length=11, null=True, unique=True)
 
 
 
@@ -23,7 +23,7 @@ class Info(AbstractUser):
 
     order_complete_rate = models.IntegerField(verbose_name='成交订单概率',default=0)
     release_time_avg = models.CharField(max_length=32,verbose_name='平均放币时长',default='0')
-    cancel_time_avg = models.CharField(max_length=32, verbose_name='平均取消订单速度',default='0')
+    cancel_time_avg = models.CharField(max_length=32, verbose_name='平均取消订单时长',default='0')
 
     margin_amount = models.IntegerField(verbose_name='保证金',default=0)
 
@@ -74,3 +74,4 @@ class InfoProviders(models.Model):
             ('provider','identifier')
         )
         ordering = ['create_at']
+

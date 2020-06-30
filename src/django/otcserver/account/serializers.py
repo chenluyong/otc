@@ -1,17 +1,25 @@
 from rest_framework import serializers
 from account.models import Info
 
-class AccountInfoSerializer(serializers.ModelSerializer):
+class OtcAccountListSerializer(serializers.ModelSerializer):
     # owner = serializers.ReadOnlyField(source='owner.username')
     class Meta:
         model = Info
-        fields = ['id', 'username', 'margin_amount','date_joined', 'last_login',
+        fields = ['id', 'nickname', 'margin_amount','date_joined', 'last_login',
                   'trade_count', 'month_trade_count', 'buy_trade_count','sell_trade_count',
                   'order_complete_rate', 'release_time_avg', 'cancel_time_avg',]
 
+class OtcAccountDetailSerializer(serializers.ModelSerializer):
+    # owner = serializers.ReadOnlyField(source='owner.username')
+    class Meta:
+        model = Info
+        fields = ['id', 'nickname', 'margin_amount', 'date_joined', 'last_login',
+                  'trade_count', 'month_trade_count', 'buy_trade_count', 'sell_trade_count',
+                  'order_complete_rate', 'release_time_avg', 'cancel_time_avg', ]
 
 
-        #created = models.DateTimeField(auto_now_add=True)
+
+                #created = models.DateTimeField(auto_now_add=True)
     #title = models.CharField(max_length=100, blank=True, default='')
     #code = models.TextField()
     #linenos = models.BooleanField(default=False)
