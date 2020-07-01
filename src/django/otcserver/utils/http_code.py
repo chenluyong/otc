@@ -18,6 +18,8 @@ HTTP_CODE_CUSTOM_START = '10000'
 
 HTTP_CODE_INCORRECT_PASSWORD = '40101'
 
+HTTP_CODE_ERROR = '50001'
+
 HTTPCODE_CUSTOM_END = '60000'
 
 
@@ -38,8 +40,8 @@ http_code_cn = {
     HTTP_CODE_INTERNAL_SERVER_ERROR : '系统内部错误',
 
     # 自定义错误 10000 - 19999
-    HTTP_CODE_INCORRECT_PASSWORD : '账号或密码错误'
-
+    HTTP_CODE_INCORRECT_PASSWORD : '账号或密码错误',
+    HTTP_CODE_ERROR : '未知错误码',
 }
 http_code_en = {
 
@@ -52,4 +54,9 @@ def get_http_code(code, language = 'zh'):
 
     http_code_text = http_code_cn.copy()
 
-    return (int(code), http_code_text[code])
+    if code not in http_code_text:
+        response = http_code_text.get(HTTP_CODE_ERROR)
+    else:
+        response = http_code_text.get(code)
+
+    return (int(code), response)

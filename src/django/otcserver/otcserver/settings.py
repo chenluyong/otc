@@ -135,6 +135,8 @@ STATIC_URL = '/static/'
 AUTH_USER_MODEL = "account.Info"
 
 REST_FRAMEWORK = {
+    'EXCEPTION_HANDLER': 'utils.exception_handler.custom_exception_handler',
+    # 分页查询的返回格式
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
     'PAGE_SIZE': 2
 }

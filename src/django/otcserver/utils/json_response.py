@@ -11,33 +11,25 @@ class JsonResponse(Response):
     arbitrary media types.
     """
 
-    def __init__(self, data=None, code=None, msg=None,
-                 status=None,
+    def __init__(self, data=None, code:str=None, msg:str=None,
+                 status:int=None,
                  template_name=None, headers=None,
                  exception=False, content_type=None):
-        """
-        Alters the init arguments slightly.
-        For example, drop 'template_name', and instead use 'data'.
-        Setting 'renderer' and 'media_type' will typically be deferred,
-        For example being set automatically by the `APIView`.
-        """
         if not code:
             code = get_default_http_code()
 
-        if code:
-            args = get_http_code(code)
-            code = args[0]
+        args = get_http_code(code)
+        icode = args[0]
 
-            if not msg:
-                msg = args[1]
+        if not msg:
+            msg = args[1]
 
-            # 自定义status
-            if not status:
-
-                if int(HTTP_CODE_CUSTOM_START) < code < int(HTTPCODE_CUSTOM_END):
-                    status = int(code / int(HTTP_CODE_CUSTOM_START) * 100)
-                elif code < int(HTTP_CODE_STD_MAX_LIMIT):
-                    status = args[0]
+        # 自定义status
+        if not status:
+            if int(HTTP_CODE_CUSTOM_START) < icode < int(HTTPCODE_CUSTOM_END):
+                status = int(icode / int(HTTP_CODE_CUSTOM_START) * 100)
+            elif icode < int(HTTP_CODE_STD_MAX_LIMIT):
+                status = icode
 
         super(Response, self).__init__(None, status=status)
 
