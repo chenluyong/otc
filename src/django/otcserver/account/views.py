@@ -12,7 +12,7 @@ from django.db.utils import IntegrityError
 
 from account.models import Info as User
 from account.serializers import OtcAccountListSerializer,OtcAccountDetailSerializer,UserDetailSerializer
-from utils.json_response import JsonResponse
+from utils import JsonResponse
 from utils.http_code import *
 
 

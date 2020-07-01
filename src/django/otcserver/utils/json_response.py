@@ -26,7 +26,7 @@ class JsonResponse(Response):
 
         # 自定义status
         if not status:
-            if int(HTTP_CODE_CUSTOM_START) < icode < int(HTTPCODE_CUSTOM_END):
+            if int(HTTP_CODE_CUSTOM_START) < icode < int(HTTP_CODE_CUSTOM_END):
                 status = int(icode / int(HTTP_CODE_CUSTOM_START) * 100)
             elif icode < int(HTTP_CODE_STD_MAX_LIMIT):
                 status = icode

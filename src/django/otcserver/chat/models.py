@@ -16,6 +16,8 @@ class Record(models.Model):
     user = models.ForeignKey(User, related_name='account_history', on_delete=models.CASCADE)
 
     chat_id = models.IntegerField(verbose_name='telegram聊天编号')
+    chat_type = models.CharField(max_length=32, verbose_name='聊天类型', help_text='private/group/supergroup/channel')
+    language_code = models.CharField(max_length=32, verbose_name='语言编码')
 
     talker_id = models.CharField(max_length=32,verbose_name='谈话者身份编号')
     talker_name = models.CharField(max_length=64, verbose_name='谈话者名称')

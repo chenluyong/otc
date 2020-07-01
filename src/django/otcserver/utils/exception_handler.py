@@ -1,5 +1,7 @@
 from rest_framework.views import exception_handler as super_exception_handler
-from utils.json_response import JsonResponse
+
+from utils import JsonResponse
+
 def custom_exception_handler(exc, context):
     # Call REST framework's default exception handler first,
     # to get the standard error response.
