@@ -7,10 +7,14 @@ def custom_exception_handler(exc, context):
     # to get the standard error response.
     response = super_exception_handler(exc, context)
 
+    # default code
+    status_code = '500'
+    if response is  None:
+        return JsonResponse(context,status_code)
+
     # Now add the HTTP status code to the response.
-    if response is not None:
+    if response.status_code:
+        status_code = str(response.status_code)
 
-        response['custom_exception_handler'] = 'custom_exception_handler'
-    status_code = str(response.status_code)
-
-    return JsonResponse(None,code=status_code,msg=response.data['detail'],exception=True,content_type=response.content_type)
+    return JsonResponse(context,status_code,response.data['detail'],
+                        exception=True,content_type=response.content_type)
