@@ -25,7 +25,7 @@ class Info(AbstractUser):
     release_time_avg = models.CharField(max_length=32,verbose_name='平均放币时长',default='0')
     cancel_time_avg = models.CharField(max_length=32, verbose_name='平均取消订单时长',default='0')
 
-    margin_amount = models.IntegerField(verbose_name='保证金',default=0)
+    margin_amount = models.IntegerField(verbose_name='保证金',default=0,help_text='冻结资金，算在用户总资产中')
 
 
     # owner = models.ForeignKey('auth.User', related_name='account', on_delete=models.CASCADE)
