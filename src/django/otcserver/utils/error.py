@@ -1,6 +1,0 @@
-
-
-
-
-class OtcServerError(Exception):
-    pass

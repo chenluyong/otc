@@ -1,0 +1,11 @@
+# account
+
+`/account/sign_in/`
+PUT:
+```
+{
+    "username":"testuser",
+    "password":"asdasd",
+    "email":"727057301@qq.com"
+}
+```
