@@ -11,7 +11,7 @@ from django.db.utils import IntegrityError
 
 
 from account.models import Info as User
-from src.account.serializers import OtcAccountListSerializer,OtcAccountDetailSerializer,UserDetailSerializer
+from account.serializers import OtcAccountListSerializer,OtcAccountDetailSerializer,UserDetailSerializer
 from utils import JsonResponse
 from utils.http_code import *
 
