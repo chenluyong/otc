@@ -113,7 +113,8 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.0/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+# LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'zh-hans'
 
 TIME_ZONE = 'UTC'
 
@@ -135,6 +136,9 @@ STATIC_URL = '/static/'
 AUTH_USER_MODEL = "account.Info"
 
 REST_FRAMEWORK = {
+    # core api 文档依赖
+    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.AutoSchema',
+    # 框架内异常捕捉，自定义处理
     'EXCEPTION_HANDLER': 'utils.exception_handler.custom_exception_handler',
     # 分页查询的返回格式
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.LimitOffsetPagination',
