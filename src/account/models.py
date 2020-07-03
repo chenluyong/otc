@@ -15,17 +15,6 @@ class Info(AbstractUser):
 
 
 
-    # OTC 账户
-    trade_count = models.IntegerField(verbose_name='总订单成交数量',default=0)
-    month_trade_count  = models.IntegerField(verbose_name='月订单成交数量',default=0)
-    buy_trade_count  = models.IntegerField(verbose_name='买单订单总数量',default=0)
-    sell_trade_count = models.IntegerField(verbose_name='卖单订单总数量',default=0)
-
-    order_complete_rate = models.IntegerField(verbose_name='成交订单概率',default=0)
-    release_time_avg = models.CharField(max_length=32,verbose_name='平均放币时长',default='0')
-    cancel_time_avg = models.CharField(max_length=32, verbose_name='平均取消订单时长',default='0')
-
-    margin_amount = models.IntegerField(verbose_name='保证金',default=0,help_text='冻结资金，算在用户总资产中')
 
 
     # owner = models.ForeignKey('auth.User', related_name='account', on_delete=models.CASCADE)
