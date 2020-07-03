@@ -20,12 +20,12 @@ class History(models.Model):
     id = models.AutoField(primary_key=True)
 
     user = models.ForeignKey(User, related_name='account_balance_history', on_delete=models.CASCADE)
-    username = models.CharField(max_length=128,verbose_name='账号')
+    username = models.CharField(max_length=128,verbose_name='-账号')
     currency = models.CharField(max_length=32, verbose_name='币种名称')
     business = models.CharField(max_length=32, verbose_name='引发变更的业务',help_text='transfer/deposit/withdraw')
     change = models.FloatField(verbose_name='变更金额')
     balance = models.FloatField(verbose_name='余额')
-    prev_id = models.IntegerField(verbose_name='上一笔账单编号')
+    prev_id = models.IntegerField(verbose_name='上一笔账单编号',unique=True)
     change_at = models.DateTimeField(auto_now_add=True, verbose_name='变更时间')
     detail = models.TextField(verbose_name='更多信息',help_text='充值提现ID等')
 
@@ -34,6 +34,10 @@ class History(models.Model):
             ('user','asset'),
             ('user','business','asset'),
         )
+
+        # unique_together = (
+        #     ('prev_id',)
+        # )
         ordering = ['change_at']
 
 
