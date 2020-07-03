@@ -21,7 +21,7 @@ class History(models.Model):
 
     user = models.ForeignKey(User, related_name='account_balance_history', on_delete=models.CASCADE)
     username = models.CharField(max_length=128,verbose_name='-账号')
-    currency = models.CharField(max_length=32, verbose_name='币种名称')
+    coin_name = models.CharField(max_length=32, verbose_name='币种名称')
     business = models.CharField(max_length=32, verbose_name='引发变更的业务',help_text='transfer/deposit/withdraw')
     change = models.FloatField(verbose_name='变更金额')
     balance = models.FloatField(verbose_name='余额')
