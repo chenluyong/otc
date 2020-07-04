@@ -25,19 +25,12 @@ class History(models.Model):
     business = models.CharField(max_length=32, verbose_name='引发变更的业务',help_text='transfer/deposit/withdraw')
     change = models.FloatField(verbose_name='变更金额')
     balance = models.FloatField(verbose_name='余额')
-    prev_id = models.IntegerField(verbose_name='上一笔账单编号',unique=True)
+    prev_id = models.IntegerField(verbose_name='上一笔账单编号',unique=True,null=True)
     change_at = models.DateTimeField(auto_now_add=True, verbose_name='变更时间')
     detail = models.TextField(verbose_name='更多信息',help_text='充值提现ID等')
+    order_id = models.IntegerField(verbose_name='订单详情编号',help_text='根据business来决定订单所属的表')
 
     class Meta:
-        index_together = (
-            ('user','asset'),
-            ('user','business','asset'),
-        )
-
-        # unique_together = (
-        #     ('prev_id',)
-        # )
         ordering = ['change_at']
 
 
