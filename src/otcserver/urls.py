@@ -20,6 +20,6 @@ from rest_framework.documentation import include_docs_urls
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('account.urls')),
-    path('history/', include('history.urls')),
+    path('account/balance/', include('balance.urls')),
     path("api-docs/", include_docs_urls("API文档")),
 ]
