@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'rest_framework',
 
     'account.apps.AccountConfig',
-    'history.apps.HistoryConfig',
+    'balance.apps.BalanceConfig',
 ]
 
 MIDDLEWARE = [
