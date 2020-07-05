@@ -8,5 +8,5 @@ class AtmHistorySerializer(serializers.ModelSerializer):
 
         fields = ['id', 'blockchain', 'coin_name','txid', 'address',
                   'type', 'actual_amount', 'status','created_at',
-                  'updated_at',]
+                  'updated_at','user_id']
 

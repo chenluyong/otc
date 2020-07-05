@@ -55,6 +55,8 @@ class History(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='创建时间')
     updated_at = models.DateTimeField(auto_now=True, verbose_name='最后更新时间')
 
+    def set_user(self, id:int):
+        self.user = AccountInfoModel(id=id)
 
 class Deposit(models.Model):
     id = models.AutoField(primary_key=True)
