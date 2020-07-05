@@ -17,6 +17,8 @@ urlpatterns = [
     #     name='balance_history_detail'),
     # 检测到账
     url(r'^deposit/check/$', views.DepositCheckView.as_view(),),
+
+    # 提现到目标地址
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)
