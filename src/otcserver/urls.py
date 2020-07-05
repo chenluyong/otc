@@ -21,5 +21,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('account.urls')),
     path('account/balance/', include('balance.urls')),
+    path('atm/', include('atm.urls')),
     path("api-docs/", include_docs_urls("API文档")),
 ]
