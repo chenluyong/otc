@@ -6,11 +6,7 @@ class AtmHistorySerializer(serializers.ModelSerializer):
     class Meta:
         model = AtmHistoryModel
 
-        fields = '__all__'
+        fields = ['id', 'blockchain', 'coin_name','txid', 'address',
+                  'type', 'actual_amount', 'status','created_at',
+                  'updated_at',]
 
-
-class AtmDetailSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = AtmHistoryModel
-
-        fields = '__all__'
