@@ -1,9 +1,10 @@
-from django.conf.urls import url
+from django.conf.urls import url,re_path
 from rest_framework.urlpatterns import format_suffix_patterns
 
 from balance import views
 
 urlpatterns = [
+    # 修改资产：充值、扣款
 
     # 获取概要交易记录
     url(r'^history/$', views.BalanceHistoryListView.as_view(),name='balance_history'),
