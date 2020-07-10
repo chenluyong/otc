@@ -23,5 +23,6 @@ urlpatterns = [
     path('balance/', include('balance.urls')),
     path('atm/', include('atm.urls')),
     path('otc/', include('otc.urls')),
+    path('rpc/', include('rpc.urls')),
     path("api-docs/", include_docs_urls("API文档")),
 ]
