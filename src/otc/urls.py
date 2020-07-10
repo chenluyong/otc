@@ -16,11 +16,11 @@ urlpatterns = [
     url(r'^market/(?P<market_id>([0-9]{0,32}))/$', views.Test.as_view()),
 
     # 订单记录
-    url(r'history/',views.Test.as_view()),
+    url(r'^history/$',views.Test.as_view()),
     # 订单查询、修改
-    url(r'history/(?P<order_id>([0-9]{0,32}))/', views.Test.as_view()),
+    url(r'^history/(?P<order_id>([0-9]{0,32}))/$', views.Test.as_view()),
     # 订单取消
-    url(r'history/(?P<order_id>([0-9]{0,32}))/cancel/', views.Test.as_view())
+    url(r'^history/(?P<order_id>([0-9]{0,32}))/cancel/$', views.Test.as_view()),
 ]
 
 # urlpatterns = format_suffix_patterns(urlpatterns)
