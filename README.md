@@ -1,5 +1,6 @@
 # future
 
+- [ ] rpc
 - [ ] balance
 - [ ] otc
 - [ ] atm
