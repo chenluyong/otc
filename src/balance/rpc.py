@@ -1,5 +1,8 @@
 
 from jsonrpc.backend.django import api
+from balance.models import History as BalanceHistoryModel
+
+from balance import app_settings
 
 
 # * method: `balance.update`
@@ -17,7 +20,39 @@ from jsonrpc.backend.django import api
 @api.dispatcher.add_method(name="balance.update")
 def update(request, *args, **kwargs):
     user_id,coin_name,business, business_id, change, detail= args
+    balance = BalanceHistoryModel()
+    balance.user_id = user_id
+    balance.coin_name = coin_name.upper()
+    balance.business = business
+    balance.business_id = business_id
+    balance.change = float(change)
+    balance.detail = detail if detail else None
+
+
+    if coin_name not in app_settings.ASSETS:
+        raise Exception("the coin not found")
+
+
+    balance.update_balance()
     return 'success'
+
+
+@api.dispatcher.add_method(name="balance.freeze")
+def freeze(request, *args, **kwargs):
+    user_id,coin_name,business, business_id, change, detail= args
+
+    # balance = BalanceHistoryModel()
+    # balance.user_id = user_id
+    # balance.coin_name = coin_name.upper()
+    # balance.business = business
+    # balance.business_id = business_id
+    # balance.change = float(change)
+    # balance.freeze_balance = float(change)
+    # balance.detail = detail if detail else None
+
+    return 'success'
+
+
 
 # * method: `balance.update`
 # * params:
@@ -34,8 +69,15 @@ def update(request, *args, **kwargs):
 @api.dispatcher.add_method(name="balance.query")
 def query(request, *args, **kwargs):
     user_id = args[0]
-    print(user_id)
-    return {"BTC": {"available": "1.10000000","freeze": "9.90000000"}}
+    ret = {}
+    for coin_name in app_settings.ASSETS:
+        balances = BalanceHistoryModel.objects.filter(user_id=user_id,coin_name = coin_name)[:1]
+        if len(balances) != 0:
+            ret[coin_name] = {
+                'available': str(balances[0].balance)
+            }
+
+    return ret
 
 
 # * method: `balance.history`

@@ -3,6 +3,8 @@ from rest_framework.urlpatterns import format_suffix_patterns
 
 from balance import views
 
+from . import rpc
+
 urlpatterns = [
     # 修改资产：充值、扣款
 

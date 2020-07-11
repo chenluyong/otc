@@ -17,6 +17,11 @@ class AppSettings(object):
         })
 
 
+    @property
+    def SUPPORT_ASSETS(self):
+        return self._setting('ASSETS', ['BTC','USDT'])
+
+
 
 # Ugly? Guido recommends this himself ...
 # http://mail.python.org/pipermail/python-ideas/2012-May/014969.html

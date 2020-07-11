@@ -2,35 +2,52 @@ from django.db import models
 
 # Create your models here.
 
-from account.models import Info as User
 
-TRANSACT_TYPE = (
-    ('TRANSFER', 'transfer'),  # 划转
-    ('DEPOSIT', 'deposit'),  # 充值
-    ('WITHDRAW', 'withdraw'),  # 提现
-    ('WITHDRAW_FEE', 'withdraw_fee'),  # 提现手续费
-    ('REBATE', 'rebate'),  # 交易返佣
-    ('DEDUCTION', 'deduction'),  # 手续费抵扣
-    ('OTHER', 'other'),  # 其它
-)
 
+class Coin(models.Model):
+    coin_name = models.CharField(max_length=32, verbose_name='币种名称')
+    blockchain = models.CharField(max_length=32, verbose_name='公链网络')
 
 # 总财务账单
 class History(models.Model):
     id = models.AutoField(primary_key=True)
 
-    user = models.ForeignKey(User, related_name='account_balance_history', on_delete=models.CASCADE)
-    username = models.CharField(max_length=128,verbose_name='-账号')
+    user_id = models.IntegerField(verbose_name='用户编号')
     coin_name = models.CharField(max_length=32, verbose_name='币种名称')
     business = models.CharField(max_length=32, verbose_name='引发变更的业务',help_text='transfer/deposit/withdraw')
+    business_id = models.IntegerField(verbose_name='订单详情编号',help_text='根据business来决定订单所属的表')
     change = models.FloatField(verbose_name='变更金额')
-    balance = models.FloatField(verbose_name='余额')
+    balance = models.FloatField(verbose_name='活跃余额')
+    freeze_balance = models.FloatField(verbose_name='冻结余额',default=0)
     prev_id = models.IntegerField(verbose_name='上一笔账单编号',unique=True,null=True)
-    change_at = models.DateTimeField(auto_now_add=True, verbose_name='变更时间')
-    detail = models.TextField(verbose_name='更多信息',help_text='充值提现ID等')
-    order_id = models.IntegerField(verbose_name='订单详情编号',help_text='根据business来决定订单所属的表')
+    change_at = models.FloatField(verbose_name='变更时间')
+    detail = models.TextField(verbose_name='更多信息{object}',help_text='更多信息',null=True)
+
+
+    def update_balance(self):
+        balances = History.objects.filter(user_id=self.user_id, coin_name=self.coin_name)[:1]
+
+        prev_id = None
+        if len(balances) != 0:
+            balance = balances[0]
+            prev_id = balance.id
+            self.prev_id = prev_id
+
+            self.balance = balance.balance + self.change
+
+            if self.balance < 0 :
+                raise Exception("balance not enough!")
+
+            import time
+            self.change_at = time.time()
+
+            self.save()
+
 
     class Meta:
-        ordering = ['change_at']
+        ordering = ['-change_at']
+        index_together = [
+            ('user_id','coin_name')
+        ]
 
 
