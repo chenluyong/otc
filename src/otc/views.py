@@ -4,6 +4,7 @@ from rest_framework.views import APIView
 
 # Create your views here.
 from utils import JsonResponse
+from jsonrpc.backend.django import api
 
 class Test(APIView):
 
@@ -12,3 +13,11 @@ class Test(APIView):
         print('args:',args)
         print('kwargs:',kwargs)
         return JsonResponse({})
+
+
+@api.dispatcher.add_method(name="my.method")
+def my_method(request, *args, **kwargs):
+    rsp = Test().get(request,args,kwargs)
+    print(rsp.data)
+
+    return args, kwargs,rsp.data
