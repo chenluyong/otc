@@ -1,9 +1,10 @@
 
+import json
+
 from jsonrpc.backend.django import api
 from balance.models import History as BalanceHistoryModel
-
 from balance import app_settings
-
+from utils.error import BalanceException
 
 # * method: `balance.update`
 # * params:
@@ -26,31 +27,27 @@ def update(request, *args, **kwargs):
     balance.business = business
     balance.business_id = business_id
     balance.change = float(change)
-    balance.detail = detail if detail else None
+    balance.detail = detail if detail else json.loads(request.body)
 
+    if balance.coin_name not in app_settings.SUPPORT_ASSETS:
+        raise BalanceException("Not support the {0} coin".format(coin_name)).COIN_NOT_SUPPORT
 
-    if coin_name not in app_settings.ASSETS:
-        raise Exception("the coin not found")
+    return balance.update_balance()
 
-
-    balance.update_balance()
-    return 'success'
-
-
+# 冻结与解冻
 @api.dispatcher.add_method(name="balance.freeze")
 def freeze(request, *args, **kwargs):
     user_id,coin_name,business, business_id, change, detail= args
 
-    # balance = BalanceHistoryModel()
-    # balance.user_id = user_id
-    # balance.coin_name = coin_name.upper()
-    # balance.business = business
-    # balance.business_id = business_id
-    # balance.change = float(change)
-    # balance.freeze_balance = float(change)
-    # balance.detail = detail if detail else None
+    balance = BalanceHistoryModel()
+    balance.user_id = user_id
+    balance.coin_name = coin_name.upper()
+    balance.business = business
+    balance.business_id = business_id
+    balance.change = float(change)
+    balance.detail = detail if detail else json.loads(request.body)
 
-    return 'success'
+    return balance.update_freeze()
 
 
 
