@@ -27,6 +27,16 @@ class History(models.Model):
     detail = models.TextField(verbose_name='更多信息{object}',help_text='更多信息',null=True)
 
     @property
+    def _user_id(self):
+        return self.user_id
+
+    @_user_id.setter
+    def _user_id(self, value):
+        if value == None or value == 0:
+            raise BalanceException(_("user_id can't to be {0}").format(value)).PARAMETER_ERROR
+        self.user_id = value
+
+    @property
     def _change(self):
         return self.change
 
@@ -63,9 +73,6 @@ class History(models.Model):
             return self.save()
         except IntegrityError as e:
             raise BalanceException(e.args).DUPLICATE_SUBMISSION
-
-
-
 
     def update_freeze(self):
         balances = History.objects.filter(user_id=self.user_id, coin_name=self.coin_name)[:1]
