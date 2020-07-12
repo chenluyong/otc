@@ -1,5 +1,6 @@
 
 import json
+from django.utils.translation import gettext_lazy as _
 
 from jsonrpc.backend.django import api
 from balance.models import History as BalanceHistoryModel
@@ -21,16 +22,18 @@ from utils.error import BalanceException
 @api.dispatcher.add_method(name="balance.update")
 def update(request, *args, **kwargs):
     user_id,coin_name,business, business_id, change, detail= args
+
+    if coin_name not in app_settings.SUPPORT_ASSETS:
+        raise BalanceException(_("Not support the {0} coin").format(coin_name)).COIN_NOT_SUPPORT
+
     balance = BalanceHistoryModel()
     balance.user_id = user_id
-    balance.coin_name = coin_name.upper()
+    balance.coin_name = coin_name
     balance.business = business
     balance.business_id = business_id
-    balance.change = float(change)
+    balance._change = change
     balance.detail = detail if detail else json.loads(request.body)
 
-    if balance.coin_name not in app_settings.SUPPORT_ASSETS:
-        raise BalanceException("Not support the {0} coin".format(coin_name)).COIN_NOT_SUPPORT
 
     return balance.update_balance()
 
@@ -39,12 +42,15 @@ def update(request, *args, **kwargs):
 def freeze(request, *args, **kwargs):
     user_id,coin_name,business, business_id, change, detail= args
 
+    if coin_name not in app_settings.SUPPORT_ASSETS:
+        raise BalanceException(_("Not support the {0} coin").format(coin_name)).COIN_NOT_SUPPORT
+
     balance = BalanceHistoryModel()
     balance.user_id = user_id
-    balance.coin_name = coin_name.upper()
+    balance.coin_name = coin_name
     balance.business = business
     balance.business_id = business_id
-    balance.change = float(change)
+    balance._change = change
     balance.detail = detail if detail else json.loads(request.body)
 
     return balance.update_freeze()

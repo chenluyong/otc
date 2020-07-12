@@ -1,0 +1,62 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-07-12 14:13+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#: .\balance\models.py:38
+msgid "{0} can't change"
+msgstr "不支持金额为 {0} 的修改"
+
+#: .\balance\models.py:52 .\balance\models.py:82 .\balance\models.py:88
+#: .\balance\models.py:116
+msgid "balance: {0} {1}"
+msgstr "余额：{0} {1}"
+
+#: .\balance\models.py:55 .\balance\models.py:100 .\balance\models.py:124
+msgid "balance:0 {0}"
+msgstr "余额：0 {0}"
+
+#: .\balance\rpc.py:34 .\balance\rpc.py:52
+msgid "Not support the {0} coin"
+msgstr "不支持 {0}"
+
+#: .\utils\error.py:31
+msgid "Balance not enough."
+msgstr "余额不足"
+
+#: .\utils\error.py:36
+#, fuzzy
+#| msgid "Balance not enough."
+msgid "Freeze balance not enough."
+msgstr "余额不足"
+
+#: .\utils\error.py:41
+#, fuzzy
+#| msgid "Balance not enough."
+msgid "Balance change error."
+msgstr "余额不足"
+
+#: .\utils\error.py:46
+msgid "The coin is not supported."
+msgstr "不支持该币种"
+
+#: .\utils\error.py:51
+msgid "Duplicate submission."
+msgstr "重复提交"
+
+#~ msgid "not support"
+#~ msgstr "不支持"
