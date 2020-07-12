@@ -1,6 +1,7 @@
 # future
 
-- [ ] rpc
+- [x] locals language
+- [x] rpc
 - [ ] balance
 - [ ] otc
 - [ ] atm

@@ -48,3 +48,8 @@ class BalanceException(JSONRPCDispatchException):
     @property
     def DUPLICATE_SUBMISSION(self):
         return self._setting(32005, _("Duplicate submission."))
+
+    # 参数错误
+    @property
+    def PARAMETER_ERROR(self):
+        return self._setting(32006, _("Request parameter error"))
