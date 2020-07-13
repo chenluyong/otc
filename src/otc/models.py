@@ -1,11 +1,10 @@
 from django.db import models
-from account.models import Info as User
 # Create your models here.
 
 
 class Account(models.Model):
     id = models.AutoField(primary_key=True)
-    user = models.ForeignKey(User, related_name='account_otc', on_delete=models.CASCADE)
+    user_id = models.IntegerField(verbose_name='用户编号',unique=True)
 
     # OTC 账户
     trade_count = models.IntegerField(verbose_name='总订单成交数量',default=0)
