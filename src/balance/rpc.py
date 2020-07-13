@@ -39,11 +39,8 @@ def update(request, *args, **kwargs):
 # 冻结与解冻
 @api.dispatcher.add_method(name="balance.freeze")
 def freeze(request, *args, **kwargs):
-    user_id,coin_name,business, business_id, change, detail= args
-
-    if coin_name not in app_settings.SUPPORT_ASSETS:
-        raise BalanceException(_("Not support the {0} coin").format(coin_name)).COIN_NOT_SUPPORT
-    return _freeze(user_id,coin_name,business, business_id, change, detail if detail else None)
+    slz = BalanceUpdateRequestSerializer(args,kwargs)
+    return _freeze(slz.user_id,slz.coin_name,slz.business, slz.business_id, slz.change, slz.detail if slz.detail else json.loads(request.body))
 
 
 def _freeze(user_id,coin_name,business, business_id, change, detail):
@@ -168,7 +165,4 @@ def history(request, *args, **kwargs):
 # * params: none
 @api.dispatcher.add_method(name="asset.list")
 def asset(request, *args, **kwargs):
-    return [
-        'ETH','USDT'
-    ]
-
+    return app_settings.SUPPORT_ASSETS
