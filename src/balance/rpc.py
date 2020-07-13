@@ -7,6 +7,7 @@ from balance.models import History as BalanceHistoryModel
 from balance import app_settings
 from utils.error import BalanceException
 
+from .serializers import BalanceUpdateRequestSerializer
 # * method: `balance.update`
 # * params:
 # 1. user_id: user ID，Integer
@@ -21,15 +22,16 @@ from utils.error import BalanceException
 # 11. balance not enough
 @api.dispatcher.add_method(name="balance.update")
 def update(request, *args, **kwargs):
-    user_id,coin_name,business, business_id, change, detail= args
+    slz = BalanceUpdateRequestSerializer(args,kwargs)
+
 
     balance = BalanceHistoryModel()
-    balance._user_id = user_id
-    balance.coin_name = coin_name
-    balance.business = business
-    balance.business_id = business_id
-    balance._change = change
-    balance.detail = detail if detail else json.loads(request.body)
+    balance._user_id = slz.user_id
+    balance.coin_name = slz.coin_name
+    balance.business = slz.business
+    balance.business_id = slz.business_id
+    balance._change = slz.change
+    balance.detail = slz.detail if slz.detail else json.loads(request.body)
 
 
     return balance.update_balance()
