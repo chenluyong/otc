@@ -7,9 +7,6 @@ from utils.error import BalanceException
 
 
 
-class Coin(models.Model):
-    coin_name = models.CharField(max_length=32, verbose_name='币种名称')
-    blockchain = models.CharField(max_length=32, verbose_name='公链网络')
 
 # 总财务账单
 class History(models.Model):
