@@ -15,16 +15,17 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from rest_framework.documentation import include_docs_urls
+# coreapi
+# from rest_framework.documentation import include_docs_urls
 
 from jsonrpc.backend.django import api
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('accounts/', include('account.urls')),
     path('balance/', include('balance.urls'),  name='balance'),
-    path('atm/', include('atm.urls'), name='atm'),
-    path('otc/', include('otc.urls'), name='otc'),
+    # path('atm/', include('atm.urls'), name='atm'),
+    # path('otc/', include('otc.urls'), name='otc'),
     path('jsonrpc/', include(api.urls)),
-    path("api-docs/", include_docs_urls("API文档")),
+    # coreapi
+    # path("api-docs/", include_docs_urls("API文档")),
 ]
