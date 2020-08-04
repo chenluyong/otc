@@ -34,14 +34,12 @@ class Market(models.Model):
     price = models.CharField(max_length=32,verbose_name='价格')
     currency = models.CharField(max_length=32, verbose_name='现金名称',help_text='CNY/USD')
 
-    side = models.IntegerField(verbose_name='买单/卖单', help_text='1:卖单/2:买单')
+    side = models.IntegerField(verbose_name='广告类型', help_text='1:卖单/2:买单')
     max_deal_limit = models.FloatField(verbose_name='最大买卖额度')
     min_deal_limit = models.FloatField(verbose_name='最小买卖额度')
     public_info = models.TextField(verbose_name='公告内容')
 
-    card_enable = models.BooleanField(verbose_name='银行卡支持',default=False)
-    wechat_enable = models.BooleanField(verbose_name='微信支持',default=False)
-    alipay_enable = models.BooleanField(verbose_name='支付宝支持',default=False)
+    bank_name = models.CharField(verbose_name='银行名字')
 
     status = models.IntegerField(verbose_name='订单状态',help_text='0:删除/1:正常/2:撤销',default=False)
 
@@ -54,39 +52,31 @@ class Market(models.Model):
 
 class Order(models.Model):
     id = models.AutoField(primary_key=True)
-    market = models.ForeignKey(Market, related_name='account_otc_market_order', on_delete=models.CASCADE)
+    market = models.ForeignKey(Market,verbose_name='广告编号', related_name='account_otc_market_order', on_delete=models.CASCADE)
 
-    advertiser = models.ForeignKey(User, related_name='account_otc_market_advertiser', on_delete=models.CASCADE,verbose_name='广告主身份')
+    user_id = models.IntegerField(verbose_name='用户编号')
+    opposite_id = models.IntegerField(verbose_name='对手编号')
+
     side = models.IntegerField(verbose_name='买单/卖单', help_text='1:卖单/2:买单')
-    opposite = models.ForeignKey(User, related_name='account_otc_market_advertiser', on_delete=models.CASCADE,verbose_name='客户身份')
 
     coin_name = models.CharField(max_length=32,verbose_name='币种名称')
     price = models.CharField(max_length=32,verbose_name='价格')
     currency = models.CharField(max_length=32, verbose_name='现金名称',help_text='CNY/USD')
     transact_type = models.CharField(max_length=32, verbose_name='交易方式',help_text='card/wechat/alipay')
 
-    status = models.IntegerField(verbose_name='订单状态',help_text='0:取消/1:等待付款/2:成功',default=2)
-    error_status = models.IntegerField(verbose_name='异常状态', help_text='0:无/1:申诉中', default=0)
-
-    create_at = models.DateTimeField(auto_created=True, verbose_name='创建时间')
-    finish_at = models.DateTimeField(auto_now=True,verbose_name='完成时间')
-
-    class Meta:
-        ordering = ['create_at']
+    status = models.IntegerField(verbose_name='订单状态',help_text='0:成功/1:取消/2:等待付款/3:等待放币/4:申诉中/5:申诉完结',default=2)
 
 
-class OrderDetail(models.Model):
-    id = models.AutoField(primary_key=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE,verbose_name='用户')
-    order = models.ForeignKey(Order, on_delete=models.CASCADE,verbose_name='主订单')
-    opposite = models.ForeignKey(User, on_delete=models.CASCADE,verbose_name='对手用户')
-    side = models.IntegerField(verbose_name='买单/卖单', help_text='1:卖单/2:买单')
+    created_at = models.DateTimeField(auto_created=True, verbose_name='创建时间')
+    user_payed_at = models.DateTimeField(auto_now=True,verbose_name='用户支付时间')
+    opposite_payed_at = models.DateTimeField(auto_now=True, verbose_name='对手支付时间')
+    finished_at = models.DateTimeField(auto_now=True,verbose_name='完成时间')
 
-    status = models.IntegerField(verbose_name='订单状态',help_text='0:待支付/1:已经支付或放币',default=2)
-    error_status = models.IntegerField(verbose_name='异常状态', help_text='0:申诉被拒绝/1:申诉受理/2:申诉已处理/', default=0)
-
-    create_at = models.DateTimeField(auto_created=True, verbose_name='创建时间')
-    pay_at = models.DateTimeField(auto_now=True,verbose_name='支付或放币时间')
+    sues_status = models.IntegerField(verbose_name='异常状态', help_text='0:无/1:提交申诉/2:申诉已受理/3:申诉已处理/4:申诉被拒绝', default=0)
+    sues_submitted_at = models.DateTimeField(auto_now=True,verbose_name='提交申诉时间')
+    sues_accepted_at = models.DateTimeField(auto_now=True, verbose_name='受理申诉时间')
+    sues_processed_at = models.DateTimeField(auto_now=True, verbose_name='处理申诉时间')
+    sues_finished_at = models.DateTimeField(auto_now=True, verbose_name='完结申诉时间')
 
     class Meta:
         ordering = ['create_at']
