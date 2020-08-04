@@ -41,7 +41,7 @@ class BalanceException(JSONRPCDispatchException):
 
     # 不支持的币种
     @property
-    def COIN_NOT_SUPPORT(self):
+    def ASSET_NOT_SUPPORT(self):
         return self._setting(32004, _("The coin is not supported."))
 
     # 重复提交

@@ -14,35 +14,15 @@ class History(models.Model):
 
     user_id = models.IntegerField(verbose_name='用户编号')
     coin_name = models.CharField(max_length=32, verbose_name='币种名称')
-    business = models.CharField(max_length=32, verbose_name='引发变更的业务',help_text='transfer/deposit/withdraw')
-    business_id = models.IntegerField(verbose_name='订单详情编号',help_text='根据business来决定订单所属的表')
+    business = models.CharField(max_length=32, verbose_name='业务系统行为', help_text='使用/解冻/冻结/充值/提现')
+    business_id = models.IntegerField(verbose_name='订单详情编号',help_text='业务订单编号，可用于业务系统查看订单详情')
     change = models.FloatField(verbose_name='变更金额')
     balance = models.FloatField(verbose_name='活跃余额')
-    freeze_balance = models.FloatField(verbose_name='冻结余额',default=0)
+    # 冻结资金，解冻资金，消费冻结资金
+    freeze_balance = models.FloatField(verbose_name='不可用余额',default=0)
     prev_id = models.IntegerField(verbose_name='上一笔账单编号',unique=True,null=True)
     change_at = models.FloatField(verbose_name='变更时间')
-    detail = models.TextField(verbose_name='更多信息{object}',help_text='更多信息',null=True)
-
-    @property
-    def _user_id(self):
-        return self.user_id
-
-    @_user_id.setter
-    def _user_id(self, value):
-        if value == None or value == 0:
-            raise BalanceException(_("user_id can't to be {0}").format(value)).PARAMETER_ERROR
-        self.user_id = value
-
-    @property
-    def _change(self):
-        return self.change
-
-    @_change.setter
-    def _change(self,value):
-        v = float(value)
-        if v == 0:
-            raise BalanceException(_("{0} can't change").format(value)).CHANGE_ERROR
-        self.change = v
+    detail = models.TextField(verbose_name='更多信息{object}',help_text='商户信息，创建交易时传入的信息。对账使用，不脱敏	',null=True)
 
 
     def update_balance(self):

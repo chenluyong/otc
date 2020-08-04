@@ -22,8 +22,12 @@ from django.utils.translation import gettext_lazy as _
 
 from balance import app_settings
 from utils.error import BalanceException
+import sys
 
 
+
+class BalanceBase():
+    pass
 
 class BalanceHistorySerializer():
     _user_id = None
@@ -42,7 +46,7 @@ class BalanceHistorySerializer():
 
     @user_id.setter
     def user_id(self, value):
-        if value == None or value == 0:
+        if value is None or value == 0:
             raise BalanceException(_("user_id can't to be {0}").format(value)).PARAMETER_ERROR
         self._user_id = value
 
@@ -53,7 +57,7 @@ class BalanceHistorySerializer():
     @coin_name.setter
     def coin_name(self, value):
         if value and value not in app_settings.SUPPORT_ASSETS:
-            raise BalanceException(_("Not support the {0} coin").format(value)).COIN_NOT_SUPPORT
+            raise BalanceException(_("Not support the {0} coin").format(value)).ASSET_NOT_SUPPORT
         self._coin_name = value
 
     @property
@@ -116,7 +120,7 @@ class BalanceHistorySerializer():
         self._detail = value
 
 class BalanceUpdateRequestSerializer(BalanceHistorySerializer):
-    def __init__(self, request, *args, **kwargs):
+    def __init__(self,  *args, **kwargs):
         try:
             self.user_id = args[0]
             self.coin_name = args[1]
@@ -127,3 +131,53 @@ class BalanceUpdateRequestSerializer(BalanceHistorySerializer):
         except IndexError as e:
             pass
 
+
+class BalanceHistoryRequestSerializer(BalanceHistorySerializer):
+    _start_time = 0
+    _end_time = sys.maxsize
+    _offset = 0
+    _limit = 25
+
+    @property
+    def start_time(self):
+        return self._start_time
+    @start_time.setter
+    def start_time(self, value):
+        self._start_time = value
+
+    @property
+    def end_time(self):
+        return self._end_time
+    @end_time.setter
+    def end_time(self, value):
+        self._end_time = value
+
+    @property
+    def offset(self):
+        return self._offset
+    @offset.setter
+    def offset(self, value):
+        self._offset = value
+
+    @property
+    def limit(self):
+        return self._limit
+    @limit.setter
+    def limit(self, value):
+        self._limit = value
+
+    def __init__(self, *args, **kwargs):
+        try:
+            self.user_id = args[0]
+            self.coin_name = args[1]
+            self.business = args[2]
+            self.start_time = args[3]
+            self.end_time = args[4]
+
+            if args[5]:
+                self.offset = args[5]
+            if args[6]:
+                self.limit = args[6]
+
+        except IndexError as e:
+            pass

@@ -3,11 +3,7 @@ import json
 from django.utils.translation import gettext_lazy as _
 
 from jsonrpc.backend.django import api
-from balance.models import History as BalanceHistoryModel
-from balance import app_settings
-from utils.error import BalanceException
-
-from .serializers import BalanceUpdateRequestSerializer
+from balance.services import *
 # * method: `balance.update`
 # * params:
 # 1. user_id: user ID，Integer
@@ -23,36 +19,14 @@ from .serializers import BalanceUpdateRequestSerializer
 @api.dispatcher.add_method(name="balance.update")
 def update(request, *args, **kwargs):
     slz = BalanceUpdateRequestSerializer(args,kwargs)
-
-
-    balance = BalanceHistoryModel()
-    balance._user_id = slz.user_id
-    balance.coin_name = slz.coin_name
-    balance.business = slz.business
-    balance.business_id = slz.business_id
-    balance._change = slz.change
-    balance.detail = slz.detail if slz.detail else json.loads(request.body)
-
-
-    return balance.update_balance()
+    return balance_update(slz.user_id,slz.coin_name,slz.business, slz.business_id, slz.change, json.loads(request.body))
 
 # 冻结与解冻
 @api.dispatcher.add_method(name="balance.freeze")
 def freeze(request, *args, **kwargs):
     slz = BalanceUpdateRequestSerializer(args,kwargs)
-    return _freeze(slz.user_id,slz.coin_name,slz.business, slz.business_id, slz.change, slz.detail if slz.detail else json.loads(request.body))
+    return freeze_balance_update(slz.user_id,slz.coin_name,slz.business, slz.business_id, slz.change, slz.detail if slz.detail else json.loads(request.body))
 
-
-def _freeze(user_id,coin_name,business, business_id, change, detail):
-    balance = BalanceHistoryModel()
-    balance._user_id = user_id
-    balance.coin_name = coin_name
-    balance.business = business
-    balance.business_id = business_id
-    balance._change = change
-    balance.detail = detail
-
-    return balance.update_freeze()
 
 # * method: `balance.update`
 # * params:
@@ -68,22 +42,26 @@ def _freeze(user_id,coin_name,business, business_id, change, detail):
 # 11. balance not enough
 @api.dispatcher.add_method(name="balance.query")
 def query(request, *args, **kwargs):
-    user_id = args[0]
+    user_id = None
+    asset = None
+    try:
+        user_id = args[0]
+        asset = args[1]
+    except IndexError as e:
+        pass
 
-    if user_id != None or user_id != 0:
+    if user_id is None or user_id == 0:
         raise BalanceException(_("user_id can't to be {0}").format(user_id)).PARAMETER_ERROR
 
-    ret = {}
-    for coin_name in app_settings.SUPPORT_ASSETS:
-        balances = BalanceHistoryModel.objects.filter(user_id=user_id,coin_name = coin_name)[:1]
+    # 检测客户端是否指定查询
+    assets = app_settings.SUPPORT_ASSETS
+    if asset:
+        if asset not in app_settings.SUPPORT_ASSETS:
+            raise BalanceException(_("Not support the {0} coin").format(asset)).ASSET_NOT_SUPPORT
+        else:
+            assets = [asset]
 
-        if len(balances) != 0:
-            ret[coin_name] = {
-                'available': str(balances[0].balance),
-                'freeze': str(balances[0].freeze_balance)
-            }
-
-    return ret
+    return balance_query(user_id, assets)
 
 
 # * method: `balance.history`
@@ -97,69 +75,8 @@ def query(request, *args, **kwargs):
 # 6. limit: count limit，Integer
 @api.dispatcher.add_method(name="balance.history")
 def history(request, *args, **kwargs):
-    from django.db.models import Q
-    import time
-
-    user_id = None
-    coin_name = None
-    business = None
-    start_time = None
-    end_time = None
-    offset = 0
-    limit = 25
-    try:
-        user_id = args[0]
-        coin_name = args[1]
-        business = args[2]
-        start_time = args[3]
-        end_time = args[4]
-
-        if args[5]:
-            offset = args[5]
-        if args[6]:
-            limit = args[6]
-
-    except IndexError as e:
-        pass
-
-    con = Q()
-    if user_id != None and user_id != 0:
-        con.children.append(('user_id',user_id))
-    else:
-        raise BalanceException(_("user_id can't to be {0}").format(user_id)).PARAMETER_ERROR
-
-    if coin_name != None:
-        con.children.append(('coin_name', coin_name))
-    if business != None:
-        con.children.append(('business', business))
-
-    if start_time != None and start_time != 0:
-        con.children.append(('change_at__gt', start_time))
-        if end_time == None or end_time == 0:
-            end_time = time.time()
-        con.children.append(('change_at__lt', end_time))
-
-    result = BalanceHistoryModel.objects.filter(con)[offset:offset+limit]
-    count = BalanceHistoryModel.objects.filter(con).count()
-    ret = []
-    for r in result:
-        ret.append({
-            'id':r.id,
-            'coin_name':r.coin_name,
-            'business':r.business,
-            'change':r.change,
-            'balance':r.balance,
-            'freeze_balance':r.freeze_balance,
-            'time':r.change_at,
-            'detail':r.detail
-        })
-
-    return {
-        "offset" : offset,
-        "limit" : limit,
-        "count" : count,
-        "data" : ret
-    }
+    slz = BalanceHistoryRequestSerializer(args)
+    return balance_history(slz.user_id,slz.coin_name, slz.business, slz.start_time, slz.end_time, slz.offset, slz.limit)
 
 # * method: `asset.list`
 # * params: none
